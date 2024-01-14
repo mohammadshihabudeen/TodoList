@@ -1,0 +1,207 @@
+Use of react:
+Reduce the number of js lines
+Manipulate the dom
+Simple dom
+It uses babel compiler to convert the versions
+It uses JSX (javascript and xml)
+
+Setup:
+Install nodejs
+Chrome extension(React dev tool)
+Vs code(es7+React)
+Vs code-emmet(javascript react)
+Cmd(npx create-react-app appname)
+Npm start-to start server
+
+Jsx:
+Every components in separate files
+React Creates virtual dom
+import React from 'react';//import packages
+import App from './App';//root element
+Class components-not used currently
+<div className='app'>
+Different in attributes-classname,idname
+Your lucky number is {no}
+Use { }-represent JS code(objects,booleans not valid child)
+	function name1(){return "hello shihab"}
+	{name1()},Your lucky number is {no}
+	Function declaration and calling in jsx
+
+Functional components:
+First letter should be capital
+import React from 'react';
+let no=0;
+function Header() {
+    return (
+        <header>
+            <h1>My app</h1>
+        </header>
+    );
+}
+export default Header
+Ctrl+alt+r  (rafce)create arrow function using es7 snippet
+<Header/>
+Injecting component in app
+
+Applying css:
+import './index.css';
+Importing css
+const footerstyle={
+    color:"white",
+    backgroundColor:"yellow"
+
+
+}
+function Footer() {
+    return (
+        <footer style={footerstyle}><div>Copyright &copy;</footer>
+    )
+}
+Inline styling
+
+Event-handling(click)
+function rand(){
+    console.log(“hi”)
+  }
+<button onClick={rand}>change</button>
+Normal function call [don’t use ( ) prevent auto call]
+ function rand(nam){
+    console.log("hi",nam)
+ }
+<button onClick={()=>{rand("shihab")}}>change</button>
+Use anonymous functions to pass parameter
+<button onDoubleClick={(e)=>{rand(e)}}>change</button>
+For doubleclick
+
+Use-state (Hook):
+To change the content without reloading 
+In class components we can’t use hooks
+We can’t use hooks inside the conditions
+import { useState } from 'react'
+Import useState hook
+It is a function it returns the array of values
+let arr=[12,1,23,14]
+let [no,setNo]=useState(arr[Math.round(Math.random()*4)])
+//no is the current value,setNo is for after change
+function rand(){
+setNo(arr[Math.round(Math.random()*4)])
+//we can pass the value}
+setNo(no-12)
+setNo(no+12)//it performs the last task only above line not works
+setNo((preno)=>{return preno-12})
+setNo((posno)=>{return posno+12})//to perform multiple tasks should use arrow functions
+function name1(){console.log("hello shihab")}
+const [name,changename]=useState(name1())
+If we pass a parameter as a function it always calls the function whenever clicked
+So use arrow function return a function to improve speed
+const [name,changename]=useState(()=>{name1()})
+var [name,changename]=useState({name:"shihab",age:"hi"})
+  //objects passing used in legacy codes(not best practice)
+Must use different different use state for properties
+
+List and Keys:
+      <ul>
+        {items.map((item)=>(
+          //key used for state control it should be passed
+          <li className='item' key={item.id}>
+            <input type="checkbox" checked={item.checked} onChange={()=>handlecheck(item.id)}/>
+            <label>{item.item}</label>
+            <FaTrashAlt role='button' tabIndex={0} onClick={()=>handledelete(item.id)}/>
+          </li>
+        ))}
+      </ul>
+Creating the list with attributes
+  let [items, setitems] = useState(
+    [{ id: 1, checked: true, item: "prayer" },
+    { id: 2, checked: false, item: "workout" },
+    { id: 3, checked: true, item: "study notes" }]);
+  const handlecheck = (id) => {
+    const newl = items.map((item) =>{
+      if(item.id === id)
+      {return { ...item, checked: !item.checked }}
+      else
+      {
+        return item
+      }})
+    setitems(newl)
+  }
+  const handledelete = (id) => {
+    const newl = items.filter((item) =>{
+      if(item.id != id)
+      return item
+    })
+    console.log(newl)
+    setitems(newl)
+  }
+Handling the list using usestate
+localStorage.setItem("newl", JSON.stringify(newl))
+Storing in local storage
+let [items, setitems] = useState(JSON.parse(localStorage.getItem("newl")));
+Retriving from local storage
+
+
+Props and props drilling:
+Passing all values to its child component
+Parameters called as props it is an object
+<Header title="Myapp"/>
+{/* value passing */}
+function Header({title}) {//name should be same in object destruction
+    return (
+        <header>
+            <h1>{title}</h1>
+        </header>
+    );
+}
+Use abstraction for props drilling
+
+
+Controlled Input:
+Create the coponent with form
+const AddItem = ({newItem,setNewItem,handleSubmit}) => {
+  return (
+    <form className='addForm' onSubmit={handleSubmit}>
+        <label htmlFor="addItem" >AddItem</label>
+        <input
+        type="text"
+        placeholder='Add Item'
+        id="addItem"
+        value={newItem}
+        onChange={(e)=>setNewItem(e.target.value)}
+        required
+        />
+        <button
+        type='submit'
+        >
+        <FaPlus/>
+        </button>
+    </form>
+  )
+}
+Whenever any changes occurs in label it is stored into the newItem
+Then create the required usesstate and functions
+  const [newItem,setNewItem]=useState("")
+  const addItem=(item)=>{
+    const id=items.length ? items[items.length-1].id+1:1
+    const addNewItem={id,checked:false,item}
+    const ListItems=[...items,addNewItem]
+    setitems(ListItems)
+    localStorage.setItem("newl", JSON.stringify(ListItems))
+  }
+  const handleSubmit=(e)=>{
+    e.preventDefault();
+    if(!newItem) return;
+    addItem(newItem)
+    setNewItem("")
+  }
+Then inject the component into app
+      <AddItem
+      newItem={newItem}
+      setNewItem={setNewItem}
+      handleSubmit={handleSubmit}
+      />
+We can also use the same for search box
+      <Content
+      items={items.filter(item=>
+        ((item.item).toLowerCase()).includes(search.toLocaleLowerCase())
+      )}/>
+It runs baes on the search usesstate
